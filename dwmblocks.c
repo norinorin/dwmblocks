@@ -105,7 +105,7 @@ void getcmd(const Block *block, char *output)
 	do
 	{
 		errno = 0;
-		s = fgets(tmpstr, CMDLENGTH - (strlen(delim) + 1), cmdf);
+		s = fgets(tmpstr, CMDLENGTH - (strlen(sep) + 3), cmdf);
 		e = errno;
 	} while (!s && e == EINTR);
 	pclose(cmdf);
@@ -117,12 +117,11 @@ void getcmd(const Block *block, char *output)
 	strcpy(output, block->icon);
 	strcpy(output + i, tmpstr);
 	remove_all(output, '\n');
+	strcat(output, " ");
+	strcat(output, sep);
+	if (block != &blocks[LENGTH(blocks) - 1])
+		strcat(output, " ");
 	i = strlen(output);
-	if ((i > 0 && block != &blocks[LENGTH(blocks) - 1]))
-	{
-		strcat(output, delim);
-	}
-	i += strlen(delim);
 	output[i++] = '\0';
 }
 
@@ -298,7 +297,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < argc; i++)
 	{
 		if (!strcmp("-d", argv[i]))
-			delim = argv[++i];
+			sep = argv[++i];
 		else if (!strcmp("-p", argv[i]))
 			writestatus = pstdout;
 	}

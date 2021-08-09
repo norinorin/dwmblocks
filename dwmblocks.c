@@ -6,12 +6,13 @@
 #include <signal.h>
 #include <errno.h>
 #include <X11/Xlib.h>
-#define LENGTH(X) (sizeof(X) / sizeof (X[0]))
-#define CMDLENGTH		50
+#define LENGTH(X) (sizeof(X) / sizeof(X[0]))
+#define CMDLENGTH 50
 
-typedef struct {
-	char* icon;
-	char* command;
+typedef struct
+{
+	char *icon;
+	char *command;
 	unsigned int interval;
 	unsigned int signal;
 } Block;
@@ -30,7 +31,6 @@ void setroot();
 void statusloop();
 void termhandler(int signum);
 
-
 #include "config.h"
 
 static Display *dpy;
@@ -39,22 +39,25 @@ static Window root;
 static char statusbar[LENGTH(blocks)][CMDLENGTH] = {0};
 static char statusstr[2][256];
 static int statusContinue = 1;
-static void (*writestatus) () = setroot;
+static void (*writestatus)() = setroot;
 
 void replace(char *str, char old, char new)
 {
-	for(char * c = str; *c; c++)
-		if(*c == old)
+	for (char *c = str; *c; c++)
+		if (*c == old)
 			*c = new;
 }
 
 // the previous function looked nice but unfortunately it didnt work if to_remove was in any position other than the last character
 // theres probably still a better way of doing this
-void remove_all(char *str, char to_remove) {
+void remove_all(char *str, char to_remove)
+{
 	char *read = str;
 	char *write = str;
-	while (*read) {
-		if (*read != to_remove) {
+	while (*read)
+	{
+		if (*read != to_remove)
+		{
 			*write++ = *read;
 		}
 		++read;
@@ -65,7 +68,8 @@ void remove_all(char *str, char to_remove) {
 int gcd(int a, int b)
 {
 	int temp;
-	while (b > 0){
+	while (b > 0)
+	{
 		temp = a % b;
 
 		a = b;
@@ -73,7 +77,6 @@ int gcd(int a, int b)
 	}
 	return a;
 }
-
 
 //opens process *cmd and stores output in *output
 void getcmd(const Block *block, char *output)
@@ -84,47 +87,55 @@ void getcmd(const Block *block, char *output)
 		output++;
 	}
 	char *cmd = block->command;
-	FILE *cmdf = popen(cmd,"r");
-	if (!cmdf){
-        //printf("failed to run: %s, %d\n", block->command, errno);
+	FILE *cmdf = popen(cmd, "r");
+	if (!cmdf)
+	{
+		//printf("failed to run: %s, %d\n", block->command, errno);
 		return;
-    }
-    char tmpstr[CMDLENGTH] = "";
-    // TODO decide whether its better to use the last value till next time or just keep trying while the error was the interrupt
-    // this keeps trying to read if it got nothing and the error was an interrupt
-    //  could also just read to a separate buffer and not move the data over if interrupted
-    //  this way will take longer trying to complete 1 thing but will get it done
-    //  the other way will move on to keep going with everything and the part that failed to read will be wrong till its updated again
-    // either way you have to save the data to a temp buffer because when it fails it writes nothing and then then it gets displayed before this finishes
-	char * s;
-    int e;
-    do {
-        errno = 0;
-        s = fgets(tmpstr, CMDLENGTH-(strlen(delim)+1), cmdf);
-        e = errno;
-    } while (!s && e == EINTR);
+	}
+	char tmpstr[CMDLENGTH] = "";
+	// TODO decide whether its better to use the last value till next time or just keep trying while the error was the interrupt
+	// this keeps trying to read if it got nothing and the error was an interrupt
+	//  could also just read to a separate buffer and not move the data over if interrupted
+	//  this way will take longer trying to complete 1 thing but will get it done
+	//  the other way will move on to keep going with everything and the part that failed to read will be wrong till its updated again
+	// either way you have to save the data to a temp buffer because when it fails it writes nothing and then then it gets displayed before this finishes
+	char *s;
+	int e;
+	do
+	{
+		errno = 0;
+		s = fgets(tmpstr, CMDLENGTH - (strlen(delim) + 1), cmdf);
+		e = errno;
+	} while (!s && e == EINTR);
 	pclose(cmdf);
+
+	if (!strlen(tmpstr))
+		return;
+
 	int i = strlen(block->icon);
 	strcpy(output, block->icon);
-    strcpy(output+i, tmpstr);
+	strcpy(output + i, tmpstr);
 	remove_all(output, '\n');
 	i = strlen(output);
-    if ((i > 0 && block != &blocks[LENGTH(blocks) - 1])){
-        strcat(output, delim);
-    }
-    i+=strlen(delim);
+	if ((i > 0 && block != &blocks[LENGTH(blocks) - 1]))
+	{
+		strcat(output, delim);
+	}
+	i += strlen(delim);
 	output[i++] = '\0';
 }
 
 void getcmds(int time)
 {
-	const Block* current;
-	for(int i = 0; i < LENGTH(blocks); i++)
+	const Block *current;
+	for (int i = 0; i < LENGTH(blocks); i++)
 	{
 		current = blocks + i;
-		if ((current->interval != 0 && time % current->interval == 0) || time == -1){
-			getcmd(current,statusbar[i]);
-        }
+		if ((current->interval != 0 && time % current->interval == 0) || time == -1)
+		{
+			getcmd(current, statusbar[i]);
+		}
 	}
 }
 
@@ -135,9 +146,10 @@ void getsigcmds(int signal)
 	for (int i = 0; i < LENGTH(blocks); i++)
 	{
 		current = blocks + i;
-		if (current->signal == signal){
-			getcmd(current,statusbar[i]);
-        }
+		if (current->signal == signal)
+		{
+			getcmd(current, statusbar[i]);
+		}
 	}
 }
 
@@ -145,26 +157,24 @@ void setupsignals()
 {
 	struct sigaction sa;
 
-	for(int i = SIGRTMIN; i <= SIGRTMAX; i++)
+	for (int i = SIGRTMIN; i <= SIGRTMAX; i++)
 		signal(i, SIG_IGN);
 
-	for(int i = 0; i < LENGTH(blocks); i++)
+	for (int i = 0; i < LENGTH(blocks); i++)
 	{
 		if (blocks[i].signal > 0)
 		{
-			signal(SIGRTMIN+blocks[i].signal, sighandler);
-			sigaddset(&sa.sa_mask, SIGRTMIN+blocks[i].signal);
+			signal(SIGRTMIN + blocks[i].signal, sighandler);
+			sigaddset(&sa.sa_mask, SIGRTMIN + blocks[i].signal);
 		}
 	}
 	sa.sa_sigaction = buttonhandler;
 	sa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &sa, NULL);
 	struct sigaction sigchld_action = {
-  		.sa_handler = SIG_DFL,
-  		.sa_flags = SA_NOCLDWAIT
-	};
+		.sa_handler = SIG_DFL,
+		.sa_flags = SA_NOCLDWAIT};
 	sigaction(SIGCHLD, &sigchld_action, NULL);
-
 }
 #endif
 
@@ -172,21 +182,23 @@ int getstatus(char *str, char *last)
 {
 	strcpy(last, str);
 	str[0] = '\0';
-    for(int i = 0; i < LENGTH(blocks); i++) {
+	for (int i = 0; i < LENGTH(blocks); i++)
+	{
 		strcat(str, statusbar[i]);
-        if (i == LENGTH(blocks) - 1)
-            strcat(str, " ");
-    }
-	str[strlen(str)-1] = '\0';
-	return strcmp(str, last);//0 if they are the same
+		if (i == LENGTH(blocks) - 1)
+			strcat(str, " ");
+	}
+	str[strlen(str) - 1] = '\0';
+	return strcmp(str, last); //0 if they are the same
 }
 
 void setroot()
 {
-	if (!getstatus(statusstr[0], statusstr[1]))//Only set root if text has changed.
+	if (!getstatus(statusstr[0], statusstr[1])) //Only set root if text has changed.
 		return;
 	Display *d = XOpenDisplay(NULL);
-	if (d) {
+	if (d)
+	{
 		dpy = d;
 	}
 	screen = DefaultScreen(dpy);
@@ -197,53 +209,55 @@ void setroot()
 
 void pstdout()
 {
-	if (!getstatus(statusstr[0], statusstr[1]))//Only write out if text has changed.
+	if (!getstatus(statusstr[0], statusstr[1])) //Only write out if text has changed.
 		return;
-	printf("%s\n",statusstr[0]);
+	printf("%s\n", statusstr[0]);
 	fflush(stdout);
 }
-
 
 void statusloop()
 {
 #ifndef __OpenBSD__
 	setupsignals();
 #endif
-    // first figure out the default wait interval by finding the
-    // greatest common denominator of the intervals
-    unsigned int interval = -1;
-    for(int i = 0; i < LENGTH(blocks); i++){
-        if(blocks[i].interval){
-            interval = gcd(blocks[i].interval, interval);
-        }
-    }
-	unsigned int i = 0;
-    int interrupted = 0;
-    const struct timespec sleeptime = {interval, 0};
-    struct timespec tosleep = sleeptime;
-	getcmds(-1);
-	while(statusContinue)
+	// first figure out the default wait interval by finding the
+	// greatest common denominator of the intervals
+	unsigned int interval = -1;
+	for (int i = 0; i < LENGTH(blocks); i++)
 	{
-        // sleep for tosleep (should be a sleeptime of interval seconds) and put what was left if interrupted back into tosleep
-        interrupted = nanosleep(&tosleep, &tosleep);
-        // if interrupted then just go sleep again for the remaining time
-        if(interrupted == -1){
-            continue;
-        }
-        // if not interrupted then do the calling and writing
-        getcmds(i);
-        writestatus();
-        // then increment since its actually been a second (plus the time it took the commands to run)
-        i += interval;
-        // set the time to sleep back to the sleeptime of 1s
-        tosleep = sleeptime;
+		if (blocks[i].interval)
+		{
+			interval = gcd(blocks[i].interval, interval);
+		}
+	}
+	unsigned int i = 0;
+	int interrupted = 0;
+	const struct timespec sleeptime = {interval, 0};
+	struct timespec tosleep = sleeptime;
+	getcmds(-1);
+	while (statusContinue)
+	{
+		// sleep for tosleep (should be a sleeptime of interval seconds) and put what was left if interrupted back into tosleep
+		interrupted = nanosleep(&tosleep, &tosleep);
+		// if interrupted then just go sleep again for the remaining time
+		if (interrupted == -1)
+		{
+			continue;
+		}
+		// if not interrupted then do the calling and writing
+		getcmds(i);
+		writestatus();
+		// then increment since its actually been a second (plus the time it took the commands to run)
+		i += interval;
+		// set the time to sleep back to the sleeptime of 1s
+		tosleep = sleeptime;
 	}
 }
 
 #ifndef __OpenBSD__
 void sighandler(int signum)
 {
-	getsigcmds(signum-SIGRTMIN);
+	getsigcmds(signum - SIGRTMIN);
 	writestatus();
 }
 
@@ -262,8 +276,8 @@ void buttonhandler(int sig, siginfo_t *si, void *ucontext)
 				break;
 		}
 		char shcmd[1024];
-		sprintf(shcmd,"%s && kill -%d %d",current->command, current->signal+34,process_id);
-		char *command[] = { "/bin/sh", "-c", shcmd, NULL };
+		sprintf(shcmd, "%s && kill -%d %d", current->command, current->signal + 34, process_id);
+		char *command[] = {"/bin/sh", "-c", shcmd, NULL};
 		setenv("BLOCK_BUTTON", button, 1);
 		setsid();
 		execvp(command[0], command);
@@ -279,13 +293,13 @@ void termhandler(int signum)
 	exit(0);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	for(int i = 0; i < argc; i++)
+	for (int i = 0; i < argc; i++)
 	{
-		if (!strcmp("-d",argv[i]))
+		if (!strcmp("-d", argv[i]))
 			delim = argv[++i];
-		else if(!strcmp("-p",argv[i]))
+		else if (!strcmp("-p", argv[i]))
 			writestatus = pstdout;
 	}
 	signal(SIGTERM, termhandler);

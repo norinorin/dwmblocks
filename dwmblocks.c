@@ -111,7 +111,10 @@ void getcmd(const Block *block, char *output)
 	pclose(cmdf);
 
 	if (!strlen(tmpstr))
+	{
+		output[0] = '\0';
 		return;
+	}
 
 	int i = strlen(block->icon);
 	strcpy(output, block->icon);

@@ -105,25 +105,28 @@ void getcmd(const Block *block, char *output)
 	do
 	{
 		errno = 0;
-		s = fgets(tmpstr, CMDLENGTH - (strlen(sep) + 3), cmdf);
+		s = fgets(tmpstr, CMDLENGTH - 1, cmdf);
 		e = errno;
 	} while (!s && e == EINTR);
 	pclose(cmdf);
 
-	if (!strlen(tmpstr))
+	int tmpstrlen;
+	if (!(tmpstrlen = strlen(tmpstr)))
 	{
+		// remove the signal character
 		output[0] = '\0';
 		return;
 	}
 
-	int i = strlen(block->icon);
+	int i;
 	strcpy(output, block->icon);
-	strcpy(output + i, tmpstr);
-	remove_all(output, '\n');
-	strcat(output, " ");
-	strcat(output, sep);
+	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(sep) - 3))
+		strcpy(tmpstr + i - 5, "...\n");
+	output += strlen(block->icon);
+	output += sprintf(output, "%s %s", tmpstr, sep);
 	if (block != &blocks[LENGTH(blocks) - 1])
-		strcat(output, " ");
+		strcpy(output, " ");
+	remove_all(output, '\n');
 	i = strlen(output);
 	output[i++] = '\0';
 }

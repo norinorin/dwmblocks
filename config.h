@@ -4,7 +4,7 @@ static const Block blocks[] = {
 	{"", "sb-spotify", 5, 0},
 	{"Mem: ", "sb-memory", 10, 0},
 	// {"", "sb-cputemp", 10, 0},
-	{"⬇️: ", "sb-checkupdates", 5, 0},
+	{"⬇: ", "sb-checkupdates", 5, 0},
 	{"", "sb-clock", 5, 0},
 	{"", "sb-internet", 5, 0},
 };

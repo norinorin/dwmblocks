@@ -120,17 +120,20 @@ void getcmd(const Block *block, char *output)
 		output++;
 	}
 
+	if (block != &blocks[0])
+	{
+		output[0] = ' ';
+		output++;
+	}
+
 	int i;
 	strcpy(output, block->icon);
 	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(sep) - 3))
-		strcpy(tmpstr + i - 5, "...\n");
+		strcpy(tmpstr + i - 4, "...");
 	output += strlen(block->icon);
 	output += sprintf(output, "%s %s", tmpstr, sep);
-	if (block != &blocks[LENGTH(blocks) - 1])
-		strcpy(output, " ");
 	remove_all(output - strlen(block->icon) - strlen(tmpstr) - 1 - strlen(sep), '\n');
-	i = strlen(output);
-	output[i++] = '\0';
+	output[0] = '\0';
 }
 
 void getcmds(int time)

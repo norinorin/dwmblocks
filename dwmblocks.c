@@ -105,6 +105,7 @@ void getcmd(const Block *block, char *output)
 	} while (!s && e == EINTR);
 	pclose(cmdf);
 
+	remove_all(tmpstr, '\n');
 	int tmpstrlen;
 	if (!(tmpstrlen = strlen(tmpstr)))
 	{

@@ -81,11 +81,6 @@ int gcd(int a, int b)
 //opens process *cmd and stores output in *output
 void getcmd(const Block *block, char *output)
 {
-	if (block->signal)
-	{
-		output[0] = block->signal;
-		output++;
-	}
 	char *cmd = block->command;
 	FILE *cmdf = popen(cmd, "r");
 	if (!cmdf)
@@ -117,6 +112,14 @@ void getcmd(const Block *block, char *output)
 		return;
 	}
 
+	if (block->signal)
+	{
+		// actually only add signal char
+		// if the command output something
+		output[0] = block->signal;
+		output++;
+	}
+
 	int i;
 	strcpy(output, block->icon);
 	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(sep) - 3))
@@ -125,7 +128,7 @@ void getcmd(const Block *block, char *output)
 	output += sprintf(output, "%s %s", tmpstr, sep);
 	if (block != &blocks[LENGTH(blocks) - 1])
 		strcpy(output, " ");
-	remove_all(output, '\n');
+	remove_all(output - strlen(block->icon) - strlen(tmpstr) - 1 - strlen(sep), '\n');
 	i = strlen(output);
 	output[i++] = '\0';
 }

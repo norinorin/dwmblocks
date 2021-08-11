@@ -113,7 +113,6 @@ void getcmd(const Block *block, char *output)
 	int tmpstrlen;
 	if (!(tmpstrlen = strlen(tmpstr)))
 	{
-		// remove the signal character
 		output[0] = '\0';
 		return;
 	}

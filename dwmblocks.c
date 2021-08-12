@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <X11/Xlib.h>
 #define LENGTH(X) (sizeof(X) / sizeof(X[0]))
-#define CMDLENGTH 50
+#define CMDLENGTH 100
 
 typedef struct
 {
@@ -104,7 +104,7 @@ void getcmd(const Block *block, char *output)
 		e = errno;
 	} while (!s && e == EINTR);
 	pclose(cmdf);
-
+	s = output;
 	remove_all(tmpstr, '\n');
 	int tmpstrlen;
 	if (!(tmpstrlen = strlen(tmpstr)))
@@ -129,11 +129,13 @@ void getcmd(const Block *block, char *output)
 
 	int i;
 	strcpy(output, block->icon);
-	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(lsep) - 1))
+	if (tmpstrlen > (i = CMDLENGTH - strlen(s) - strlen(lsep) - 1))
 		strcpy(tmpstr + i - 4, "...");
 	output += strlen(block->icon);
-	output += sprintf(output, "%s%s", tmpstr, lsep);
-	remove_all(output - strlen(block->icon) - strlen(tmpstr) - strlen(lsep), '\n');
+	output += sprintf(output, "%s", tmpstr);
+	if (block != &blocks[LENGTH(blocks) - 1])
+		output += sprintf(output, "%s", lsep);
+	remove_all(s, '\n');
 	output[0] = '\0';
 }
 

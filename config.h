@@ -2,18 +2,18 @@
 static const Block blocks[] = {
 	/*Icon*/ /*Command*/ /*Update Interval*/ /*Update Signal*/
 	// These 2 require nerd fonts
-	{" ", "sb-spotify", 5, 11},
-	{" ", "sb-memory", 10, 12},
+	{"", "sb-spotify", 5, 11},
+	{"", "sb-memory", 10, 12},
 	// {"", "sb-cputemp", 10, 0},
-	{"⬇ ", "sb-checkupdates", 60, 9}, // this one requires joy pixels
+	{"", "sb-checkupdates", 60, 9}, // this one requires joy pixels
 	{"", "sb-clock", 5, 21},
 	{"", "sb-internet", 5, 22},
 };
 
 // The one that will be added between commands and before the next command sigchar
-static char *lsep = " |";
+static char *lsep = " ";
 // The one that will be added between commands and after the current command sigchar
-static char *rsep = " ";
+static char *rsep = "";
 
 // Have dwmblocks automatically recompile and run when you edit this file in
 // vim with the following line in your vimrc/init.vim:

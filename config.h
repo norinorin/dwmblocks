@@ -6,8 +6,8 @@ static const Block blocks[] = {
 	{"", "sb-memory", 10, 12},
 	// {"", "sb-cputemp", 10, 0},
 	{"", "sb-checkupdates", 60, 9}, // this one requires joy pixels
-	{"", "sb-clock", 5, 21},
 	{"", "sb-internet", 5, 22},
+	{"", "sb-clock", 5, 21},
 };
 
 // The one that will be added between commands and before the next command sigchar

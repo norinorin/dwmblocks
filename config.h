@@ -1,10 +1,11 @@
 //Modify this file to change what commands output to your statusbar, and recompile using the make command.
 static const Block blocks[] = {
 	/*Icon*/ /*Command*/ /*Update Interval*/ /*Update Signal*/
-	{"", "sb-spotify", 5, 11},
-	{"Mem: ", "sb-memory", 10, 12},
+	// These 2 require nerd fonts
+	{" ", "sb-spotify", 5, 11},
+	{" ", "sb-memory", 10, 12},
 	// {"", "sb-cputemp", 10, 0},
-	{"⬇: ", "sb-checkupdates", 60, 9},
+	{"⬇ ", "sb-checkupdates", 60, 9}, // this one requires joy pixels
 	{"", "sb-clock", 5, 21},
 	{"", "sb-internet", 5, 22},
 };

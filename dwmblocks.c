@@ -123,17 +123,17 @@ void getcmd(const Block *block, char *output)
 
 	if (block != &blocks[0])
 	{
-		output[0] = ' ';
-		output++;
+		strcpy(output, rsep);
+		output += strlen(rsep);
 	}
 
 	int i;
 	strcpy(output, block->icon);
-	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(sep) - 3))
+	if (tmpstrlen > (i = CMDLENGTH - strlen(output) - strlen(lsep) - 1))
 		strcpy(tmpstr + i - 4, "...");
 	output += strlen(block->icon);
-	output += sprintf(output, "%s %s", tmpstr, sep);
-	remove_all(output - strlen(block->icon) - strlen(tmpstr) - 1 - strlen(sep), '\n');
+	output += sprintf(output, "%s%s", tmpstr, lsep);
+	remove_all(output - strlen(block->icon) - strlen(tmpstr) - strlen(lsep), '\n');
 	output[0] = '\0';
 }
 
@@ -308,8 +308,10 @@ int main(int argc, char **argv)
 {
 	for (int i = 0; i < argc; i++)
 	{
-		if (!strcmp("-d", argv[i]))
-			sep = argv[++i];
+		if (!strcmp("-l", argv[i]))
+			lsep = argv[++i];
+		else if (!strcmp("-r", argv[i]))
+			rsep = argv[++i];
 		else if (!strcmp("-p", argv[i]))
 			writestatus = pstdout;
 	}

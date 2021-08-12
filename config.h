@@ -10,8 +10,10 @@ static const Block blocks[] = {
 	{"", "sb-internet", 5, 22},
 };
 
-//Sets delimiter between status commands. NULL character ('\0') means no delimiter.
-static char *sep = "|";
+// The one that will be added between commands and before the next command sigchar
+static char *lsep = " |";
+// The one that will be added between commands and after the current command sigchar
+static char *rsep = " ";
 
 // Have dwmblocks automatically recompile and run when you edit this file in
 // vim with the following line in your vimrc/init.vim:

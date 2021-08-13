@@ -12,7 +12,10 @@
 typedef struct
 {
 	char *icon;
+	char *colicon;
 	char *command;
+	char *colcmd;
+	char *colend;
 	unsigned int interval;
 	unsigned int signal;
 } Block;
@@ -113,6 +116,8 @@ void getcmd(const Block *block, char *output)
 		return;
 	}
 
+	output += sprintf(output, "%s", block->colicon);
+
 	if (block->signal)
 	{
 		// actually only add signal char
@@ -122,17 +127,15 @@ void getcmd(const Block *block, char *output)
 	}
 
 	if (block != &blocks[0])
-	{
-		strcpy(output, rsep);
-		output += strlen(rsep);
-	}
+		output += sprintf(output, "%s", rsep);
 
 	int i;
-	strcpy(output, block->icon);
-	if (tmpstrlen > (i = CMDLENGTH - strlen(s) - strlen(lsep) - 1))
+	if (tmpstrlen > (i = CMDLENGTH - strlen(s) - strlen(block->icon) - strlen(block->colcmd) - strlen(block->colend) - strlen(lsep) - 1))
 		strcpy(tmpstr + i - 4, "...");
-	output += strlen(block->icon);
+	output += sprintf(output, "%s", block->icon);
+	output += sprintf(output, "%s", block->colcmd);
 	output += sprintf(output, "%s", tmpstr);
+	output += sprintf(output, "%s", block->colend);
 	if (block != &blocks[LENGTH(blocks) - 1])
 		output += sprintf(output, "%s", lsep);
 	remove_all(s, '\n');

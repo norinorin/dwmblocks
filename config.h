@@ -2,12 +2,12 @@
 static const Block blocks[] = {
 	/*Icon*/ /*Icon color*/ /*Command*/ /*Command color/* /*Color end*/ /*Update Interval*/ /*Update Signal*/
 	// These 2 require nerd fonts
-	{"  ", "^c#191414^^b#1db954^", "sb-spotify", "^c#191414^^b#1ed960^", "^d^", 5, 11},
-	{" ", "^c#bf616a^", "sb-memory", "^c#bf616a^", "", 10, 12},
+	{"", "sb-spotify", 5, 11},
+	{"", "sb-memory", 10, 12},
 	// {"", "sb-cputemp", 10, 0},
-	{" ", "^c#94af7d^", "sb-checkupdates", "^c#94af7d^", "", 60, 9}, // this one requires joy pixels
-	{"", "", "sb-internet", "", "", 5, 22},
-	{"", "", "sb-clock", "", "", 5, 21},
+	{"", "sb-checkupdates", 60, 9}, // this one requires joy pixels
+	{"", "sb-internet", 5, 22},
+	{"", "sb-clock", 5, 21},
 };
 
 // The one that will be added between commands and before the next command sigchar

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$BLOCK_BUTTON" = "1" ]; then
+	setsid -f "$TERMINAL" -e sb-yay
+fi
+
+update="$(checkupdates | wc -l)"
+
+[[ $update = 0 ]] && color="^d^" || color="^c#ffff00^"
+[[ $update = 1 ]] && plural="update" || plural="updates"
+printf "%s %d %s" "$color" "$update" "$plural"

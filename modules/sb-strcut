@@ -1,0 +1,15 @@
+#case $- in (*H*) hexp=enabled ;; (*) echo hexp=disabled ;; esac
+text="${@:2}"
+charmax=$1
+if [ "$(sb-len $text)" -le "$charmax" ]; then
+	echo "$text"
+else
+	while [ "$charmax" -gt "0" ]; do
+		charmax=$[charmax-1]
+		text=`echo "$text" | colrm $(sb-max $[charmax-2] 0)`
+		if [ "$(sb-len "$text...")" -le "$charmax" ]; then
+			break
+		fi
+	done
+	echo "$text..."
+fi

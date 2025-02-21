@@ -1,0 +1,30 @@
+#!/bin/sh
+
+clock=$(date '+%I')
+
+case "$clock" in
+	"00") icon="🕛" ;;
+	"01") icon="🕐" ;;
+	"02") icon="🕑" ;;
+	"03") icon="🕒" ;;
+	"04") icon="🕓" ;;
+	"05") icon="🕔" ;;
+	"06") icon="🕕" ;;
+	"07") icon="🕖" ;;
+	"08") icon="🕗" ;;
+	"09") icon="🕘" ;;
+	"10") icon="🕙" ;;
+	"11") icon="🕚" ;;
+	"12") icon="🕛" ;;
+esac
+
+icon=""
+
+dbg="#b70c4a"
+bg="#e50f5c"
+#dbg="$(xgetres color13)"
+#dbg=${dbg:="#001429"}
+#bg="$(xgetres color13)"
+#bg=${bg:="#001f3d"}
+printf "^c#111111^^b$dbg^ %s ^c#111111^^b$bg^ %s ^d^" "$icon" "$(date '+%a, %d %b %H:%M')"
+

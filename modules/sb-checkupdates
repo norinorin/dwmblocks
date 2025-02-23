@@ -6,6 +6,12 @@ fi
 
 update="$(checkupdates | wc -l)"
 
-[[ $update = 0 ]] && color="^d^" || color="^c#ffff00^"
-[[ $update = 1 ]] && plural="update" || plural="updates"
-printf "%s %d %s" "$color" "$update" "$plural"
+# [[ $update = 0 ]] && color="^d^" || color="^c#ffff00^"
+# [[ $update = 1 ]] && plural="update" || plural="updates"
+# printf "%s %d %s" "$color" "$update" "$plural"
+
+if [[ $update -gt 0 ]]; then
+    [[ $update = 1 ]] && plural="update" || plural="updates"
+    color="^c#ffff00^"
+    printf "%s %d %s\n" "$color" "$update" "$plural"
+fi

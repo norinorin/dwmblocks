@@ -1,2 +1,2 @@
 #!/bin/sh
-free --mebi | sed -n '2{p;q}' | awk '{printf ("^c#bf616a^ %2.1fG\n", ( $3 / 1024))}'
+free --mebi | sed -n '2{p;q}' | awk '{printf ("^c#bf616a^󰍛 %2.1fG\n", ( $3 / 1024))}'

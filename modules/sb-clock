@@ -18,7 +18,7 @@ case "$clock" in
 	"12") icon="🕛" ;;
 esac
 
-icon=""
+icon=""
 
 dbg="#b70c4a"
 bg="#e50f5c"

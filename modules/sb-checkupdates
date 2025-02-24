@@ -12,6 +12,6 @@ update="$(checkupdates | wc -l)"
 
 if [[ $update -gt 0 ]]; then
     [[ $update = 1 ]] && plural="update" || plural="updates"
-    color="^c#ffff00^"
+    color="^c#f9e2af^"
     printf "%s %d %s\n" "$color" "$update" "$plural"
 fi

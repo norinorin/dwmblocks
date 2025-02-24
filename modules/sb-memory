@@ -1,2 +1,32 @@
-#!/bin/sh
-free --mebi | sed -n '2{p;q}' | awk '{printf ("^c#bf616a^󰍛 %2.1fG\n", ( $3 / 1024))}'
+#!/bin/bash
+
+usage=$(free --mebi | sed -n '2{p;q}' | awk '{printf "%.1f", ($3 / $2) * 100}')
+
+get_color() {
+  local percent_float="$1"
+  local percent
+  percent=$(printf "%.0f" "$percent_float")
+  local red=0
+  local green=0
+
+  if [ "$percent" -le 50 ]; then
+    red=$(( (percent * 255 + 25) / 50 ))
+    green=255
+  else
+    red=255
+    green=$(( ((100 - percent) * 255 + 25) / 50 ))
+  fi
+
+  local pastel_red=$(( (red + 255) / 2 ))
+  local pastel_green=$(( (green + 255) / 2 ))
+  local pastel_blue=127
+  local hex=$(printf "%02x%02x%02x" "$pastel_red" "$pastel_green" "$pastel_blue")
+
+  echo "#${hex}"
+}
+
+# Get the pastel color for the current usage percentage
+color=$(get_color "$usage")
+
+# Print the status bar with the pastel color gradient
+free --mebi | sed -n '2{p;q}' | awk -v color="$color" '{printf ("^c"color"^󰍛 %2.1fG\n", ($3 / 1024))}'

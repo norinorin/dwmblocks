@@ -1,9 +1,17 @@
 #!/bin/sh
-c="^c#0099df^Connected"
-dc="^c#ff0000^Disconnected"
-case "$(cat /sys/class/net/w*/operstate 2>/dev/null)" in
-	down) wifiicon="📡 $c";;
-	up) wifiicon="$(awk '/^\s*w/ { print "📶", int($3 * 100 / 70) "% " }' /proc/net/wireless) $c";;
-esac
 
-printf "^c#FFFF00^%s%s%s" "$wifiicon" "$(sed "s/down/❎ $dc/;s/up/🌐 $c/" /sys/class/net/e*/operstate 2>/dev/null)" "$(sed "s/.*/🔒 $dc/" /sys/class/net/tun*/operstate 2>/dev/null)"
+# c="^c#0099df^Connected"
+# dc="^c#ff0000^Offline"
+# case "$(cat /sys/class/net/w*/operstate 2>/dev/null)" in
+# 	down) wifiicon="📡 $c";;
+# 	up) wifiicon="$(awk '/^\s*w/ { print "📶", int($3 * 100 / 70) "% " }' /proc/net/wireless) $c";;
+# esac
+
+# printf "^c#FFFF00^%s%s%s" "$wifiicon" "$(sed "s/down/❎ $dc/;s/up/🌐 $c/" /sys/class/net/e*/operstate 2>/dev/null)" "$(sed "s/.*/🔒 $dc/" /sys/class/net/tun*/operstate 2>/dev/null)"
+
+ping -c 1 8.8.8.8 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo -n "^c#ff8a8a^󰤭 Offline"
+else
+	echo -n "^c#fff4ea^󰤨 Net"
+fi

@@ -31,5 +31,5 @@ fg="#313244"
 #dbg=${dbg:="#001429"}
 #bg="$(xgetres color13)"
 #bg=${bg:="#001f3d"}
-printf "^c$fg^^b$bg^ %s ^d^^c$bg^ %s ^d^" "$icon" "$(date '+%a, %d %b %H:%M')"
+printf "^c$fg^^b$bg^ %s ^d^^c$bg^ %s^d^" "$icon" "$(date '+%a, %d %b %H:%M')"
 

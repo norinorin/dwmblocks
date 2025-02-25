@@ -12,6 +12,6 @@ if [ "$(pidof spotify)" ]; then
     # artist would be empty on ads
     if [ "$status" = "Playing" ] && [ ! -z "$artist" ]; then
     	title=`echo "$metadata"|grep -E -A 1 "title"|grep -E -v "title"|cut -b 44-|cut -d '"' -f 1|grep -E -v ^$`
-	printf "^c%s^^b%s^  ^d^^c%s^ %s ^d^" $fg $bg $bg "$(sb-strcut 40 "$artist - $title")"
+	printf "^c%s^^b%s^  ^d^^c%s^ %s^d^" $fg $bg $bg "$(sb-strcut 40 "$artist - $title")"
     fi
 fi
